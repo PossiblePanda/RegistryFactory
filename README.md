@@ -6,7 +6,7 @@ It’s designed for cases where you want:
 
 * Centralized, validated data
 * Fast lookups by name
-* Strong static typing in `--!strict` mode
+* Strong static typing
 * Clean, predictable APIs
 
 Common use cases include item databases, abilities, configs, resources, and more.
@@ -151,19 +151,3 @@ Returns `true` if the registry contains an entry for `name`.
 
 Returns the internal map of all registered values.
 This table should be treated as read-only.
-
----
-
-## Design Goals
-
-* **Explicit over implicit**: no magic loading behavior
-* **Fail fast**: validation errors surface immediately
-* **Type-first**: generics guide correct usage
-* **Composable**: works well with ECS, data-driven systems, and configs
-
----
-
-## License
-
-MIT License.
-See [LICENSE](LICENSE) for details.
