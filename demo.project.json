@@ -8,11 +8,9 @@
         "$path": "lib"
       }
     },
-    "StarterPlayer": {
-      "StarterPlayerScripts": {
-        "Demo": {
-          "$path": "demo"
-        }
+    "ServerScriptService": {
+      "Demo": {
+        "$path": "demo"
       }
     }
   }
