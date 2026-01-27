@@ -82,16 +82,17 @@ end
 
 	If `weights` is provided, it is used to perform weighted random
 	selection, where higher weights increase the likelihood of being chosen.
-	Items not present in the weights table default to a weight of `1`.
+	Items not present in the weights table default to a weight of `0`
+	and will never be selected.
 
 	If `weights` is omitted, all registry items are treated as having
-	equal weight.
+	equal weight (`1`).
 
 	If `seed` is provided, the selection is deterministic.
 	If `seed` is omitted, a random seed is used.
 
-	Throws an error if the registry is empty or if any weight is less than
-	or equal to zero.
+	Throws an error if the registry is empty, if the total weight is zero,
+	or if any weight is negative.
 ]=]
 local function GetRandom<T>(
 	self: Registry<T>,
