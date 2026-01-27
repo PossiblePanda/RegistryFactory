@@ -10,6 +10,13 @@ print(ItemRegistry:Exists("non_existent_item"))
 print("Should print a list of every item:")
 print(ItemRegistry:GetAll())
 
+print("Should print a random item:")
+print(ItemRegistry:GetRandom())
+
+print("Should always print pickaxe:")
+print(ItemRegistry:GetRandom({
+    pickaxe = 1
+}))
 
 print("Should error:")
 print(EnemyRegistry:Get("non_existent_enemy"))
