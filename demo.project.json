@@ -1,0 +1,19 @@
+{
+  "name": "RegistryFactoryDemo",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "RegistryFactory": {
+        "$path": "lib"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Demo": {
+          "$path": "demo"
+        }
+      }
+    }
+  }
+}

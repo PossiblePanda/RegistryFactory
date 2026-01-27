@@ -1,0 +1,21 @@
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
+
+# Rojo files
+sourcemap.json
+
+# Pesde
+/.pesde
+/luau_packages
+/lune_packages
+/pesde.lock
+
+# Wally
+/wally.lock
+
+# Build files
+RegistryFactory.rbxm
+
+# VSCode files
+.vscode/

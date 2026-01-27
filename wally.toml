@@ -1,0 +1,13 @@
+[package]
+name = "possiblepanda/registryfactory"
+description = "A fully type-safe module for creating \"registries\" of data in Roblox Luau."
+license = "MIT"
+authors = ["Possible Panda"]
+version = "1.0.0"
+
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+exclude = ["**"]
+include = ["default.project.json", "lib", "lib/**", "LICENSE.txt", "wally.toml"]
+private = false
