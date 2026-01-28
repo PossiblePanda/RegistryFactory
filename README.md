@@ -110,13 +110,13 @@ end
 You can optionally validate each module as it’s loaded.
 
 ```lua
-local Items = RegistryFactory.Create<Item>(
+local Items = RegistryFactory.Create(
 	script.Items,
 	function(data: Item, module: ModuleScript)
 		assert(type(data.Name) == "string", module.Name .. " is missing Name")
 		assert(type(data.Damage) == "number", module.Name .. " is missing Damage")
 	end
-)
+) :: RegistryFactory.Registry<Item>
 ```
 
 If validation throws, registry creation will fail immediately.
