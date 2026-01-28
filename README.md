@@ -83,7 +83,7 @@ type Item = {
 	Damage: number,
 }
 
-local Items = RegistryFactory.Create<Item>(script.Items)
+local Items = RegistryFactory.Create(script.Items) :: RegistryFactory.Registry<Item>
 ```
 
 ---
