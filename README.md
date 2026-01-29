@@ -151,3 +151,8 @@ Returns `true` if the registry contains an entry for `name`.
 
 Returns the internal map of all registered values.
 This table should be treated as read-only.
+
+#### `Registry:GetRandom(weights: {[string]: number}?, rng: Random?) -> { [string]: T }`
+
+Selects a random value from the registry.
+[see more](https://github.com/Sebastian2852/RegistryFactory/blob/2762462580200c920a7fd5dfca8a0bf6bcafebcc/lib/init.luau#L73-L96)
