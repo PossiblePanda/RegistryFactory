@@ -24,7 +24,7 @@ export type Registry<T> = {
 	Get: (self: Registry<T>, name: string) -> T,
 	Exists: (self: Registry<T>, name: string) -> boolean,
 	GetAll: (self: Registry<T>) -> {[string]: T},
-	GetRandom: (self: Registry<T>, weights: {[string]: number}?, seed: number?) -> T,
+	GetRandom: (self: Registry<T>, weights: {[string]: number}?, rng: Random?) -> T,
 }
 
 --[=[
@@ -97,9 +97,9 @@ end
 local function GetRandom<T>(
 	self: Registry<T>,
 	weights: {[string]: number}?,
-	seed: number?
+	rng: Random?
 ): T
-	local rng = if seed ~= nil then Random.new(seed) else Random.new()
+	rng = rng or Random.new()
 
 	local totalWeight = 0
 	for name in self._items do
