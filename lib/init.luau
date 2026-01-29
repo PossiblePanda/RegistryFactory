@@ -75,7 +75,7 @@ end
 	@within Registry
 
 	@param weights {[string]: number}?
-	@param seed number?
+	@param rng Random?
 	@return T
 
 	Selects a random value from the registry.
