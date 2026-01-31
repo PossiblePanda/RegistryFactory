@@ -24,7 +24,7 @@ export type Registry<T> = {
 	Get: (self: Registry<T>, name: string) -> T,
 	Exists: (self: Registry<T>, name: string) -> boolean,
 	GetAll: (self: Registry<T>) -> {[string]: T},
-	GetRandom: (self: Registry<T>, weights: {[string]: number}?, seed: number?) -> T,
+	GetRandom: (self: Registry<T>, weights: {[string]: number}?, rng: Random?) -> T,
 }
 
 --[=[
@@ -75,7 +75,7 @@ end
 	@within Registry
 
 	@param weights {[string]: number}?
-	@param seed number?
+	@param rng Random?
 	@return T
 
 	Selects a random value from the registry.
@@ -88,8 +88,7 @@ end
 	If `weights` is omitted, all registry items are treated as having
 	equal weight (`1`).
 
-	If `seed` is provided, the selection is deterministic.
-	If `seed` is omitted, a random seed is used.
+	You may pass `rng` to use a custom `Random` object for randomness.
 
 	Throws an error if the registry is empty, if the total weight is zero,
 	or if any weight is negative.
@@ -97,9 +96,9 @@ end
 local function GetRandom<T>(
 	self: Registry<T>,
 	weights: {[string]: number}?,
-	seed: number?
+	rng: Random?
 ): T
-	local rng = if seed ~= nil then Random.new(seed) else Random.new()
+	rng = rng or Random.new()
 
 	local totalWeight = 0
 	for name in self._items do
