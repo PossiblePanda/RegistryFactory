@@ -88,8 +88,7 @@ end
 	If `weights` is omitted, all registry items are treated as having
 	equal weight (`1`).
 
-	If `seed` is provided, the selection is deterministic.
-	If `seed` is omitted, a random seed is used.
+	You may pass `rng` to use a custom `Random` object for randomness.
 
 	Throws an error if the registry is empty, if the total weight is zero,
 	or if any weight is negative.
