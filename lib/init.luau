@@ -118,7 +118,7 @@ local function GetRandom<T>(
 
 	assert(totalWeight > 0, "Cannot pick random item from registry with zero total weight")
 
-	local roll = rng:NextNumber(0, totalWeight)
+	local roll = (rng :: Random):NextNumber(0, totalWeight)
 	local cumulative = 0
 
 	for name, item in self._items do
