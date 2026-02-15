@@ -18,6 +18,17 @@ print(ItemRegistry:GetRandom({
     pickaxe = 1
 }))
 
+print("Should print the Sword:")
+local query = ItemRegistry:CreateQuery()
+    :GreaterThan({"Damage"}, 10)
+    :LessThan({"Durability"}, 50000)
+    :Exact({"Name"}, "Sword")
+    :Where(function(item): boolean
+        return true
+    end)
+
+print(query:Query())
+
 print("Should error:")
 print(EnemyRegistry:Get("non_existent_enemy"))
 

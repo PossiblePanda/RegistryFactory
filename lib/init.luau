@@ -28,6 +28,23 @@ export type Registry<T> = {
 	Exists: (self: Registry<T>, name: string) -> boolean,
 	GetAll: (self: Registry<T>) -> {[string]: T},
 	GetRandom: (self: Registry<T>, weights: {[string]: number}?, rng: Random?) -> T,
+	
+	CreateQuery: (self: Registry<T>) -> RegistryQuery<T>
+}
+
+export type RegistryQuery<T> = {
+	_registry: Registry<T>,
+	_filters: { 
+		{path: {string}, predicate: (any) -> boolean} 
+	},
+
+	-- chainable methods
+	GreaterThan: (self: RegistryQuery<T>, path: {string}, value: number) -> RegistryQuery<T>,
+    LessThan: (self: RegistryQuery<T>, path: {string}, value: number) -> RegistryQuery<T>,
+    Exact: (self: RegistryQuery<T>, path: {string}, value: any) -> RegistryQuery<T>,
+    Where: (self: RegistryQuery<T>, predicate: (item: T) -> boolean) -> RegistryQuery<T>,
+
+	Query: (self: RegistryQuery<T>) -> {[string]: T},
 }
 
 --[=[
@@ -160,6 +177,95 @@ function RegistryFactory.fromModules<T>(
 	return RegistryFactory.fromTable(data, validate)
 end
 
+-- Helper to get a nested value from a table by path
+local function getNestedValue(item: any, path: {string})
+	local value = item
+	for _, key in path do
+		if type(value) ~= "table" then
+			return nil
+		end
+		value = value[key]
+	end
+	return value
+end
+
+local function CreateQuery<T>(self: Registry<T>): RegistryQuery<T>
+	local query: RegistryQuery<T> = {} :: any -- cast to satisfy Luau strict
+
+	query._registry = self
+	query._filters = {}
+
+	-- selene: allow(shadowing)
+	function query:GreaterThan(path: {string}, threshold: number): RegistryQuery<T>
+		table.insert(query._filters, {
+			path = path,
+			predicate = function(val)
+				if type(val) ~= "number" then return false end
+				return val > threshold
+			end,
+		})
+		return query
+	end
+
+	-- selene: allow(shadowing)
+	function query:LessThan(path: {string}, threshold: number): RegistryQuery<T>
+		table.insert(query._filters, {
+			path = path,
+			predicate = function(val)
+				if type(val) ~= "number" then return false end
+				return val < threshold
+			end,
+		})
+		return query
+	end
+
+	-- selene: allow(shadowing)
+	function query:Exact(path: {string}, target: any): RegistryQuery<T>
+		table.insert(query._filters, {
+			path = path,
+			predicate = function(val)
+				return val == target
+			end,
+		})
+		return query
+	end
+
+	-- selene:allow(shadowing)
+	function query:Where(predicate: (item: T) -> boolean): RegistryQuery<T>
+		table.insert(query._filters, {
+			path = {},
+			predicate = function(value)
+				return predicate(value)  -- now 'value' is the item
+			end,
+		})
+		return query
+	end
+
+
+	-- selene:allow(shadowing)
+	function query:Query(): {[string]: T}
+		local results: {[string]: T} = {}
+
+		for key, entry in query._registry:GetAll() do
+			local pass = true
+			for _, filter in query._filters do
+				local value = if #filter.path > 0 then getNestedValue(entry, filter.path) else entry
+				if not filter.predicate(value) then
+					pass = false
+					break
+				end
+			end
+			if pass then
+				results[key] = entry
+			end
+		end
+
+		return results
+	end
+
+	return query
+end
+
 --[=[
 	@function fromTable
 	@within RegistryFactory
@@ -194,7 +300,9 @@ function RegistryFactory.fromTable<T>(
 		Get = Get,
 		Exists = Exists,
 		GetAll = GetAll,
-		GetRandom = GetRandom
+		GetRandom = GetRandom,
+
+		CreateQuery = CreateQuery
 	}
 end
 
