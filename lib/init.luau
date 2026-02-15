@@ -18,6 +18,9 @@ local RegistryFactory = {}
 	Registries are created via `RegistryFactory.Create` and expose
 	methods for safe lookup and enumeration.
 ]=]
+
+type ValidateCallback<T> = ((key: string, entry: T) -> ())
+
 export type Registry<T> = {
 	_items: {[string]: T},
 
@@ -131,40 +134,59 @@ local function GetRandom<T>(
 	error("Failed to select random registry item")
 end
 
+function RegistryFactory.fromModules<T>(
+	parent: Instance,
+	recursive: boolean?,
+	validate: ValidateCallback<T>?
+): Registry<T>
+	local module_instances: {Instance}
+
+	recursive = recursive or true
+
+	if recursive then
+		module_instances = parent:GetDescendants()
+	else
+		module_instances = parent:GetChildren()
+	end
+
+	local data: {[string]: T} = {}
+	for _,module in module_instances do
+		if not module:IsA("ModuleScript") then continue end
+		
+		local entry = (require :: any)(module)
+
+		data[module.Name] = entry
+	end
+
+	return RegistryFactory.fromTable(data, validate)
+end
 
 --[=[
-	@function Create
+	@function fromTable
 	@within RegistryFactory
 
 	@param folder Instance
-	@param validate ((data: T, module: ModuleScript) -> ())?
+	@param validate ((key: string, data: T) -> ())?
 	@return Registry<T>
 
-	Creates a new registry by requiring all `ModuleScript` children
-	of the given folder.
+	Creates a new registry by using a table with keys and values.
 
 	The optional `validate` callback is invoked once per module and
 	may throw an error if the module's exported data is invalid.
 ]=]
-function RegistryFactory.Create<T>(
-	folder: Instance,
-	validate: ((data: T, module: ModuleScript) -> ())?
+function RegistryFactory.fromTable<T>(
+	data: {[string]: T},
+	validate: ValidateCallback<T>?
 ): Registry<T>
 	local items: {[string]: T} = {}
 
-	for _, module in folder:GetChildren() do
-		if not module:IsA("ModuleScript") then
-			continue
-		end
-
-		local data = require(module) :: T
+	for key, entry in data do
 		if validate then
-			validate(data, module)
+			validate(key, entry)
 		end
 
-		local name = module.Name
-		assert(items[name] == nil, "Duplicate module name: " .. name)
-		items[name] = data
+		assert(items[key] == nil, "Duplicate Registry entry: " .. key)
+		items[key] = entry
 	end
 
 	return {

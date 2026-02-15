@@ -4,4 +4,4 @@ local RegistryFactory = require(ReplicatedStorage.RegistryFactory)
 
 local example_types = require(ServerScriptService.Demo.example_types)
 
-return RegistryFactory.Create(ServerScriptService.Demo.example_data.items) :: RegistryFactory.Registry<example_types.ItemData>
+return RegistryFactory.fromModules(ServerScriptService.Demo.example_data.items) :: RegistryFactory.Registry<example_types.ItemData>
