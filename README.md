@@ -83,7 +83,7 @@ type Item = {
 	Damage: number,
 }
 
-local Items = RegistryFactory.Create<Item>(script.Items)
+local Items = RegistryFactory.Create(script.Items) :: RegistryFactory.Registry<Item>
 ```
 
 ---
@@ -110,13 +110,13 @@ end
 You can optionally validate each module as it’s loaded.
 
 ```lua
-local Items = RegistryFactory.Create<Item>(
+local Items = RegistryFactory.Create(
 	script.Items,
 	function(data: Item, module: ModuleScript)
 		assert(type(data.Name) == "string", module.Name .. " is missing Name")
 		assert(type(data.Damage) == "number", module.Name .. " is missing Damage")
 	end
-)
+) :: RegistryFactory.Registry<Item>
 ```
 
 If validation throws, registry creation will fail immediately.
@@ -151,3 +151,8 @@ Returns `true` if the registry contains an entry for `name`.
 
 Returns the internal map of all registered values.
 This table should be treated as read-only.
+
+#### `Registry:GetRandom(weights: {[string]: number}?, rng: Random?) -> { [string]: T }`
+
+Selects a random value from the registry.
+[see more](https://github.com/Sebastian2852/RegistryFactory/blob/2762462580200c920a7fd5dfca8a0bf6bcafebcc/lib/init.luau#L73-L96)
